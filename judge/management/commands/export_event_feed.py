@@ -135,7 +135,15 @@ def fill_run(
         ET.SubElement(run, "judged").text = "True"
         ET.SubElement(run, "result").text = sub.result
         ET.SubElement(run, "solved").text = "True" if sub.result == "AC" else "False"
-        ET.SubElement(run, "score").text = str(sub.case_points or 0)
+        sub_points = round(
+            (
+                sub.case_points / sub.case_total * sub.problem.points
+                if sub.case_total > 0
+                else 0
+            ),
+            3,
+        )
+        ET.SubElement(run, "score").text = str(sub_points)
 
         hash = (sub.problem.id, sub.user.user.id)
         if sub.result == "AC":
