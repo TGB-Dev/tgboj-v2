@@ -72,7 +72,7 @@ def fill_problem(contest: Contest, root: ET.Element) -> Dict[int, int]:
         ET.SubElement(problem, "id").text = str(id)
         ET.SubElement(problem, "label").text = get_label_for_problem(id)
         ET.SubElement(problem, "name").text = name
-        ET.SubElement(problem, "score").text = points
+        ET.SubElement(problem, "score").text = str(points)
 
         problem_index[external_id] = id
 
