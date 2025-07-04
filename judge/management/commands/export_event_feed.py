@@ -66,12 +66,13 @@ def fill_problem(contest: Contest, root: ET.Element) -> Dict[int, int]:
         "problem__id", "problem__name"
     )
     problem_index = {}
-    for id, (external_id, name) in enumerate(contest_problems, start=1):
+    for id, (external_id, name, points) in enumerate(contest_problems, start=1):
         problem = ET.SubElement(root, "problem")
         problem.tail = "\n"
         ET.SubElement(problem, "id").text = str(id)
         ET.SubElement(problem, "label").text = get_label_for_problem(id)
         ET.SubElement(problem, "name").text = name
+        ET.SubElement(problem, "score").text = str(points or 0)
 
         problem_index[external_id] = id
 
@@ -134,6 +135,7 @@ def fill_run(
         ET.SubElement(run, "judged").text = "True"
         ET.SubElement(run, "result").text = sub.result
         ET.SubElement(run, "solved").text = "True" if sub.result == "AC" else "False"
+        ET.SubElement(run, "score").text = str(sub.points or 0)
 
         hash = (sub.problem.id, sub.user.user.id)
         if sub.result == "AC":
