@@ -54,7 +54,7 @@ def fill_judgement(contest: Contest, root: ET.Element):
         ET.SubElement(judgement, "name").text = str(name)
 
 
-def fill_problem(contest: Contest, root: ET.Element) -> Dict[int, int]:
+def fill_problem(contest: Contest, root: ET.Element) -> tuple[Dict[int, int], Dict[int, int]]:
     def get_label_for_problem(index):
         ret = ""
         while index > 0:
@@ -66,6 +66,7 @@ def fill_problem(contest: Contest, root: ET.Element) -> Dict[int, int]:
         "problem__id", "problem__name", "points"
     )
     problem_index = {}
+    problem_points = {}
     for id, (external_id, name, points) in enumerate(contest_problems, start=1):
         problem = ET.SubElement(root, "problem")
         problem.tail = "\n"
@@ -75,8 +76,9 @@ def fill_problem(contest: Contest, root: ET.Element) -> Dict[int, int]:
         ET.SubElement(problem, "score").text = str(points)
 
         problem_index[external_id] = id
+        problem_points[external_id] = points
 
-    return problem_index
+    return problem_index, problem_points
 
 
 def fill_team(contest: Contest, root: ET.Element) -> Dict[int, int]:
@@ -105,6 +107,7 @@ def fill_run(
     contest: Contest,
     root: ET.Element,
     problem_index: Dict[int, int],
+    problem_points: Dict[int, int],
     team_index: Dict[int, int],
 ):
     solved_set = set()
@@ -135,9 +138,10 @@ def fill_run(
         ET.SubElement(run, "judged").text = "True"
         ET.SubElement(run, "result").text = sub.result
         ET.SubElement(run, "solved").text = "True" if sub.result == "AC" else "False"
+        sub_problem_points = problem_points.get(sub.problem.id, 0)
         sub_points = round(
             (
-                sub.case_points / sub.case_total * sub.problem.points
+                sub.case_points / sub.case_total * sub_problem_points
                 if sub.case_total > 0
                 else 0
             ),
@@ -208,13 +212,13 @@ class Command(BaseCommand):
         fill_judgement(contest, root)
 
         # Problems
-        problem_index = fill_problem(contest, root)
+        problem_index, problem_points = fill_problem(contest, root)
 
         # Teams
         team_index = fill_team(contest, root)
 
         # Runs (i.e. submissions)
-        fill_run(contest, root, problem_index, team_index)
+        fill_run(contest, root, problem_index, problem_points, team_index)
 
         # Contest finalization information
         fill_finalized(contest, root, last_medals)

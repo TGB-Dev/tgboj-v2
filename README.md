@@ -1,4 +1,4 @@
-# TGBOJ: The Gifted Battlefield**** Online Judge [![Build Status](https://github.com/TGB-Dev/tgboj-v2/workflows/build/badge.svg)](https://github.com/TGB-Dev/tgboj-v2/actions/) [![AGPL License](https://img.shields.io/badge/license-AGPLv3.0-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
+# TGBOJ: The Gifted Battlefield Online Judge [![Build Status](https://github.com/TGB-Dev/tgboj-v2/workflows/build/badge.svg)](https://github.com/TGB-Dev/tgboj-v2/actions/) [![AGPL License](https://img.shields.io/badge/license-AGPLv3.0-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
 
 As a fork of [VNOJ](https://github.com/VNOI-Admin/OJ), TGBOJ serves
 as [The Gifted Battlefield](https://giftedbat.edu.vn/)'s official online judge and hosts its programming contests.
