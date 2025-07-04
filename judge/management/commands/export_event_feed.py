@@ -62,17 +62,21 @@ def fill_problem(contest: Contest, root: ET.Element) -> Dict[int, int]:
             index = (index - 1) // 26
         return ret[::-1]
 
+    def get_points_for_problem(index):
+        # Assuming all problems have the same points, which is the case in most contests
+        return str(contest.format.config.get("points", 100))
+
     contest_problems = contest.contest_problems.order_by("order").values_list(
         "problem__id", "problem__name"
     )
     problem_index = {}
-    for id, (external_id, name, points) in enumerate(contest_problems, start=1):
+    for id, (external_id, name) in enumerate(contest_problems, start=1):
         problem = ET.SubElement(root, "problem")
         problem.tail = "\n"
         ET.SubElement(problem, "id").text = str(id)
         ET.SubElement(problem, "label").text = get_label_for_problem(id)
         ET.SubElement(problem, "name").text = name
-        ET.SubElement(problem, "score").text = str(points or 0)
+        ET.SubElement(problem, "score").text = get_points_for_problem(id)
 
         problem_index[external_id] = id
 
