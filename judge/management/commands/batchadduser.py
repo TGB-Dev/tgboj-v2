@@ -1,10 +1,10 @@
 import csv
 import secrets
+import string
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
-
 from judge.models import Language, Profile
 
 ALPHABET = 'abcdefghkqtxyz' + 'abcdefghkqtxyz'.upper() + '23456789'
@@ -18,7 +18,6 @@ def add_user(username, fullname, password):
     usr = User(username=username, first_name=fullname, is_active=True)
     usr.set_password(password)
     usr.save()
-
     profile = Profile(user=usr)
     profile.language = Language.objects.get(key=settings.DEFAULT_USER_LANGUAGE)
     profile.save()
@@ -45,7 +44,6 @@ class Command(BaseCommand):
                     self.style.ERROR("Input CSV file is empty or has no header.")
                 )
                 return
-
             if (
                 "username" not in reader.fieldnames
                 or "fullname" not in reader.fieldnames
@@ -58,24 +56,28 @@ class Command(BaseCommand):
                 return
 
             hasId = "id" in reader.fieldnames
+            hasPassword = "password" in reader.fieldnames
 
+            fieldnames = []
             if hasId:
-                writer = csv.DictWriter(
-                    fout, fieldnames=["id", "username", "fullname", "password"]
-                )
-            else:
-                writer = csv.DictWriter(
-                    fout, fieldnames=["username", "fullname", "password"]
-                )
+                fieldnames.append("id")
+            fieldnames += ["username", "fullname", "password"]
+
+            writer = csv.DictWriter(fout, fieldnames=fieldnames)
             writer.writeheader()
 
             for row in reader:
                 if hasId:
                     row["id"] = row["id"].strip()
                     _id = row["id"]
+
                 username = row["username"]
                 fullname = row["fullname"]
-                password = generate_password()
+
+                if hasPassword and row.get("password", "").strip():
+                    password = row["password"].strip()
+                else:
+                    password = generate_password()
 
                 try:
                     add_user(username, fullname, password)
@@ -87,20 +89,14 @@ class Command(BaseCommand):
                     )
                     continue
 
+                out_row = {}
                 if hasId:
-                    writer.writerow(
-                        {
-                            "id": _id,
-                            "username": username,
-                            "fullname": fullname,
-                            "password": password,
-                        }
-                    )
-                else:
-                    writer.writerow(
-                        {
-                            "username": username,
-                            "fullname": fullname,
-                            "password": password,
-                        }
-                    )
+                    out_row["id"] = _id
+                out_row.update(
+                    {
+                        "username": username,
+                        "fullname": fullname,
+                        "password": password,
+                    }
+                )
+                writer.writerow(out_row)
