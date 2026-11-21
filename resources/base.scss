@@ -109,7 +109,7 @@ body {
     font-size: $base_font_size;
     line-height: 1.231;
     background: $color_primary5;
-    font-family: "Segoe UI", "Lucida Grande", Arial, sans-serif;
+    font-family: $sans-fonts;
     color: $color_primary100;
     height: 100%;
 }
@@ -188,7 +188,7 @@ a {
 }
 
 noscript #noscript {
-    font-family: Arial, sans-serif;
+    font-family: $sans-fonts;
     font-size: 111%;
     color: white;
     font-weight: bold;
@@ -202,7 +202,7 @@ noscript #noscript {
 }
 
 #announcement {
-    font-family: Arial, sans-serif;
+    font-family: $sans-fonts;
     font-size: 111%;
     color: white;
     font-weight: bold;

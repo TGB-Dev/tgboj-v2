@@ -3,6 +3,9 @@
 .django-ace-widget {
     display: inline-block;
     position: relative;
+    .ace_editor {
+        font-family: $monospace-fonts !important;
+    }
     > div {
         position: absolute;
         top: 0;
