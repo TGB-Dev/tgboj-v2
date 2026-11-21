@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 from judge.models import Language, Profile
 
-ALPHABET = 'abcdefghkqtxyz' + 'abcdefghkqtxyz'.upper() + '23456789'
+ALPHABET = string.ascii_letters + string.digits
 
 
 def generate_password():
